@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Projects</h1>
+  <a href="{% url 'project_new' %}" class="button">New project</a>
+</div>
+
+{% if projects %}
+  <div class="cards">
+    {% for project in projects %}
+      {% with progress=project.progress %}
+        <div class="card project-card">
+          <div>
+            <a href="{{ project.get_absolute_url }}" class="link project-name">{{ project.name }}</a>
+            {% if project.description %}<p class="description">{{ project.description }}</p>{% endif %}
+          </div>
+          <p class="muted">{{ progress.todo }} to do · {{ progress.in_progress }} in progress · {{ progress.done }} done</p>
+          <div class="progress"><div class="progress-done" style="width: {{ progress.percent_done }}%"></div></div>
+          <p class="percent">{{ progress.percent_done }}% done</p>
+        </div>
+      {% endwith %}
+    {% endfor %}
+  </div>
+{% else %}
+  <p class="muted">No projects yet.</p>
+{% endif %}
+{% endblock %}

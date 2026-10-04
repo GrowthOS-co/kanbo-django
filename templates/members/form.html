@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>New member</h1>
+
+<form method="post" class="panel form narrow">
+  {% csrf_token %}
+  {{ form.non_field_errors }}
+  <label>
+    Name
+    {{ form.name }}
+    {{ form.name.errors }}
+  </label>
+  <label>
+    Email
+    {{ form.email }}
+    {{ form.email.errors }}
+  </label>
+  <button type="submit" class="button">Create member</button>
+</form>
+{% endblock %}

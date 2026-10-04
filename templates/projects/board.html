@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>{{ project.name }}</h1>
+    {% if project.description %}<p class="muted">{{ project.description }}</p>{% endif %}
+  </div>
+  <div class="actions">
+    <a href="{% url 'project_edit' project.pk %}" class="button button-secondary">Edit</a>
+    <a href="{% url 'task_new' project.pk %}" class="button">New task</a>
+  </div>
+</div>
+
+<nav class="pills">
+  {% for label, value, query in filters %}
+    <a href="{{ project.get_absolute_url }}{{ query }}"
+       class="pill{% if value == assignee %} pill-active{% endif %}">{{ label }}</a>
+  {% endfor %}
+</nav>
+
+<div class="board">
+  {% for column in columns %}
+    <section class="column">
+      <h2>{{ column.status.label }} <span class="count">{{ column.tasks|length }}</span></h2>
+      {% for task in column.tasks %}
+        <div class="task-card">
+          <a href="{{ task.get_absolute_url }}" class="link">{{ task.title }}</a>
+          <p>{{ task.assignee.name|default:"Unassigned" }}</p>
+          {% if task.due_date %}<p class="muted">Due {{ task.due_date|date:"M j, Y" }}</p>{% endif %}
+          {% if task.comment_count %}<p class="muted">{{ task.comment_count }} comment{{ task.comment_count|pluralize }}</p>{% endif %}
+        </div>
+      {% endfor %}
+    </section>
+  {% endfor %}
+</div>
+{% endblock %}

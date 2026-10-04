@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>{{ title }}</h1>
+
+<form method="post" class="panel form narrow">
+  {% csrf_token %}
+  {{ form.non_field_errors }}
+  <label>
+    Name
+    {{ form.name }}
+    {{ form.name.errors }}
+  </label>
+  <label>
+    Description <span class="muted">(optional)</span>
+    {{ form.description }}
+    {{ form.description.errors }}
+  </label>
+  <button type="submit" class="button">{{ submit_label }}</button>
+</form>
+{% endblock %}

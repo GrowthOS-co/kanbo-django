@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <div class="title-row">
+      <h1>{{ task.title }}</h1>
+      {% include "status_badge.html" %}
+    </div>
+    <p class="muted">in <a href="{{ task.project.get_absolute_url }}" class="link">{{ task.project.name }}</a></p>
+  </div>
+  <div class="actions">
+    <a href="{% url 'task_edit' task.pk %}" class="button button-secondary">Edit</a>
+    <form method="post" action="{% url 'task_delete' task.pk %}">
+      {% csrf_token %}
+      <button type="submit" class="button button-danger">Delete</button>
+    </form>
+    {% for status in task.other_statuses %}
+      <form method="post" action="{% url 'task_status' task.pk %}">
+        {% csrf_token %}
+        <input type="hidden" name="status" value="{{ status }}">
+        <button type="submit" class="button">Move to {{ status.label }}</button>
+      </form>
+    {% endfor %}
+  </div>
+</div>
+
+<dl class="panel details">
+  <div><dt class="muted">Assignee</dt><dd>{{ task.assignee.name|default:"Unassigned" }}</dd></div>
+  <div><dt class="muted">Due</dt><dd>{{ task.due_date|date:"M j, Y"|default:"—" }}</dd></div>
+</dl>
+
+{% if task.description %}
+  <p class="description">{{ task.description }}</p>
+{% endif %}
+
+<section class="comments">
+  <h2>Comments</h2>
+  {% if comments %}
+    <ul>
+      {% for comment in comments %}
+        <li class="panel comment">
+          <p><strong>{{ comment.author.name }}</strong> <span class="muted">{{ comment.created_at|date:"M j, Y, g:i A" }}</span></p>
+          <p class="description">{{ comment.body }}</p>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="muted">No comments yet.</p>
+  {% endif %}
+
+  <form method="post" action="{% url 'comment_new' task.pk %}" class="panel form">
+    {% csrf_token %}
+    {{ comment_form.non_field_errors }}
+    <label>
+      Who is writing?
+      {{ comment_form.author }}
+      {{ comment_form.author.errors }}
+    </label>
+    <label>
+      Comment
+      {{ comment_form.body }}
+      {{ comment_form.body.errors }}
+    </label>
+    <button type="submit" class="button">Add comment</button>
+  </form>
+</section>
+{% endblock %}

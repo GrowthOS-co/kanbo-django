@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Members</h1>
+  <a href="{% url 'member_new' %}" class="button">New member</a>
+</div>
+
+<table>
+  <thead>
+    <tr><th>Name</th><th>Email</th><th class="number">Open tasks</th></tr>
+  </thead>
+  <tbody>
+    {% for member in members %}
+      <tr>
+        <td class="name">{{ member.name }}</td>
+        <td>{{ member.email }}</td>
+        <td class="number">{{ member.open_tasks }}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
